@@ -42,7 +42,7 @@ public class FarmControllers {
 
   @PostMapping()
   public ResponseEntity<EntityFarm> createFarm(@RequestBody FarmDto newFarm) {
-    DtoConverter.dtoToModel(newFarm);
+    EntityFarm farm = DtoConverter.dtoToModel(newFarm);
 
     return ResponseEntity.status(HttpStatus.CREATED).body(farmService.insertFarm(newFarm.toFarm()));
   }
