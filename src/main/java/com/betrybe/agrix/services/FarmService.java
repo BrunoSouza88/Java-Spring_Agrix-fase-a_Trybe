@@ -35,10 +35,10 @@ public class FarmService {
   public EntityFarm getFarmbyId(Long id) {
     Optional<EntityFarm> farm = farmRepository.findById(id);
 
-    if (farm.isEmpty()) {
-      throw new Exception();
+    if (farm.isPresent()) {
+      return farm.get();
     }
 
-    return farm.get();
+    throw new Exception();
   }
 }

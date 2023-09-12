@@ -92,13 +92,15 @@ public class FarmControllers {
   */
 
   @GetMapping("/{farmId}/crops")
-  public ResponseEntity<?> getCropsByFarmId(@PathVariable Long farmId) {
-    Optional<EntityFarm> optionalFarm = Optional.ofNullable(farmService.getFarmbyId(farmId));
-
-    if (optionalFarm.isEmpty()) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fazenda não encontrada!");
+  public ResponseEntity<?> getCropById(@PathVariable Long farmId) {
+    EntityFarm farmById = farmService.getFarmbyId(farmId);
+    Optional<EntityFarm> farm = Optional.ofNullable(farmById);
+  
+    if (farm.isPresent()) {
+      List<CropDto> crop = cropService.getCropsByFarmId(farmId);
+      return ResponseEntity.status(HttpStatus.OK).body(crop);
     }
-
-    return ResponseEntity.status(HttpStatus.OK).body(cropService.getCropById(farmId));
+  
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fazenda não encontrada!");
   }
 }

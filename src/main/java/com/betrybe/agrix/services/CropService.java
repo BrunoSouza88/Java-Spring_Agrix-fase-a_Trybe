@@ -1,7 +1,6 @@
 package com.betrybe.agrix.services;
 
 import com.betrybe.agrix.dto.CropDto;
-import com.betrybe.agrix.dto.DtoConverter;
 import com.betrybe.agrix.entities.EntityCrop;
 import com.betrybe.agrix.entities.EntityFarm;
 import com.betrybe.agrix.repositories.RepositoryCrop;
@@ -58,7 +57,13 @@ public class CropService {
   * javadoc.
   */
   public List<CropDto> getCropsByFarmId(Long farmId) {
-    return DtoConverter.modelToDtoCrop(cropRepository.getCropByFarm(farmId));
+    List<EntityCrop> crops = cropRepository.getCropByFarm(farmId);
+    return crops.stream().map((crop) -> new CropDto(
+      crop.getId(),
+      crop.getName(),
+      crop.getPlantedArea(),
+      crop.getFarmId().getId()
+    )).toList();
   }
 
 }
