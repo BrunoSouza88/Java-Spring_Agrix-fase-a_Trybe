@@ -44,7 +44,8 @@ public class FarmControllers {
   public ResponseEntity<EntityFarm> createFarm(@RequestBody FarmDto newFarm) {
     EntityFarm farm = DtoConverter.dtoToModel(newFarm);
 
-    return ResponseEntity.status(HttpStatus.CREATED).body(farmService.insertFarm(newFarm.toFarm()));
+    EntityFarm newFarmInserted = farmService.insertFarm(newFarm.toFarm());
+    return ResponseEntity.status(HttpStatus.CREATED).body(newFarmInserted);
   }
 
   /**
@@ -77,7 +78,8 @@ public class FarmControllers {
 
   @PostMapping("/{farmId}/crops")
   public ResponseEntity<?> insertCrop(@PathVariable Long farmId, @RequestBody CropDto cropDto) {
-    Optional<EntityFarm> optionalFarm = Optional.ofNullable(farmService.getFarmbyId(farmId));
+    EntityFarm farmById = farmService.getFarmbyId(farmId);
+    Optional<EntityFarm> optionalFarm = Optional.ofNullable(farmById);
 
     if (optionalFarm.isEmpty()) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fazenda não encontrada!");

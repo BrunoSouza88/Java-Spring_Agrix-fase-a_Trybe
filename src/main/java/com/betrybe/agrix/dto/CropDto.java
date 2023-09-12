@@ -2,7 +2,6 @@ package com.betrybe.agrix.dto;
 
 import com.betrybe.agrix.entities.EntityCrop;
 import com.betrybe.agrix.entities.EntityFarm;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * javadoc.
