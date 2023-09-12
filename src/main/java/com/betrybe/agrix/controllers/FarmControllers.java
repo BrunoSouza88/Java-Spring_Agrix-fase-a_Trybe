@@ -1,10 +1,13 @@
 package com.betrybe.agrix.controllers;
 
+import com.betrybe.agrix.dto.CropDto;
 import com.betrybe.agrix.dto.DtoConverter;
 import com.betrybe.agrix.dto.FarmDto;
 import com.betrybe.agrix.entities.EntityFarm;
+import com.betrybe.agrix.services.CropService;
 import com.betrybe.agrix.services.FarmService;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,10 +28,12 @@ public class FarmControllers {
   
   @Autowired
   private FarmService farmService;
+  private CropService cropService;
 
   @Autowired
-  public FarmControllers(FarmService farmService) {
+  public FarmControllers(FarmService farmService, CropService cropService) {
     this.farmService = farmService;
+    this.cropService = cropService;
   }
 
   /**
@@ -37,7 +42,7 @@ public class FarmControllers {
 
   @PostMapping()
   public ResponseEntity<EntityFarm> createFarm(@RequestBody FarmDto newFarm) {
-    EntityFarm farm = DtoConverter.dtoToModel(newFarm);
+    DtoConverter.dtoToModel(newFarm);
 
     return ResponseEntity.status(HttpStatus.CREATED).body(farmService.insertFarm(newFarm.toFarm()));
   }
@@ -64,5 +69,36 @@ public class FarmControllers {
       farm.getName(),
       farm.getSize()))
       .collect(Collectors.toList());
+  }
+
+  /**
+ * javadoc.
+ */
+
+  @PostMapping("/{farmId}/crops")
+  public ResponseEntity<?> insertCrop(@PathVariable Long farmId, @RequestBody CropDto cropDto) {
+    Optional<EntityFarm> optionalFarm = Optional.ofNullable(farmService.getFarmbyId(farmId));
+
+    if (optionalFarm.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fazenda não encontrada!");
+    }
+
+    return ResponseEntity.status(HttpStatus.CREATED)
+      .body(cropService.insertCrop(cropDto, optionalFarm.get()));
+  }
+
+  /**
+  * javadoc.
+  */
+
+  @GetMapping("/{farmId}/crops")
+  public ResponseEntity<?> getCropsByFarmId(@PathVariable Long farmId) {
+    Optional<EntityFarm> optionalFarm = Optional.ofNullable(farmService.getFarmbyId(farmId));
+
+    if (optionalFarm.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Fazenda não encontrada!");
+    }
+
+    return ResponseEntity.status(HttpStatus.OK).body(cropService.getCropById(farmId));
   }
 }
